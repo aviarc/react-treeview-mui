@@ -1,20 +1,36 @@
+/* eslint-disable */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+    };
+}();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _reactAddonsCssTransitionGroup = require('react-addons-css-transition-group');
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactTransitionGroup = require('react-transition-group');
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 
 var _ListItem = require('material-ui/List/ListItem');
 
@@ -40,24 +56,60 @@ var _insertDriveFile = require('material-ui/svg-icons/editor/insert-drive-file')
 
 var _insertDriveFile2 = _interopRequireDefault(_insertDriveFile);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {default: obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var TreeList = function (_Component) {
     _inherits(TreeList, _Component);
 
+
+    function getActiveColor() {
+        return 'rgb(97, 97, 97)'
+    }
+
+    function getExpandedListItems(listItems) {
+        const expandedListItemsIndexs = []
+        for (var listItemsCount = 0; listItemsCount <= listItems.length; listItemsCount++) {
+            expandedListItemsIndexs[expandedListItemsIndexs.length] = listItemsCount
+        }
+        return expandedListItemsIndexs
+    }
+
     function TreeList(props) {
         _classCallCheck(this, TreeList);
-
         var _this = _possibleConstructorReturn(this, (TreeList.__proto__ || Object.getPrototypeOf(TreeList)).call(this, props));
 
         _this.state = {
-            expandedListItems: [],
+            expandedListItems: getExpandedListItems(this.props.listItems),
             activeListItem: null,
             searchTerm: ''
         };
@@ -68,36 +120,35 @@ var TreeList = function (_Component) {
 
     _createClass(TreeList, [{
         key: 'handleTouchTap',
-        value: function handleTouchTap(listItem, index) {
-            if (this.searchMode) {
-                if (!listItem.children) {
+        value: function handleTouchTap(event, listItem, activeListItemIndex) {
+            if (listItem.children &&
+                ( event.target.className.baseVal === 'structure-toogle-item' ||
+                    event.target.parentElement.className.baseVal === 'structure-toogle-item')) {
+                var indexOfListItemInArray = this.state.expandedListItems.indexOf(activeListItemIndex);
+                if (indexOfListItemInArray === -1) {
                     this.setState({
-                        activeListItem: index
+                        expandedListItems: this.state.expandedListItems.concat([activeListItemIndex])
                     });
-                }
-            } else {
-                if (listItem.children) {
-                    var indexOfListItemInArray = this.state.expandedListItems.indexOf(index);
-                    if (indexOfListItemInArray === -1) {
-                        this.setState({
-                            expandedListItems: this.state.expandedListItems.concat([index])
-                        });
-                    } else {
-                        var newArray = [].concat(this.state.expandedListItems);
-                        newArray.splice(indexOfListItemInArray, 1);
-                        this.setState({
-                            expandedListItems: newArray
-                        });
-                    }
                 } else {
+                    var newArray = [].concat(this.state.expandedListItems);
+                    newArray.splice(indexOfListItemInArray, 1);
                     this.setState({
-                        activeListItem: index
+                        expandedListItems: newArray
                     });
                 }
+                return
             }
 
-            if (this.searchMode && this.props.handleTouchTapInSearchMode) this.props.handleTouchTapInSearchMode(listItem, index);
-            if (!this.searchMode && this.props.handleTouchTap) this.props.handleTouchTap(listItem, index);
+            this.setState({activeListItem: activeListItemIndex});
+
+            if (this.searchMode &&
+                this.props.handleTouchTapInSearchMode) {
+                this.props.handleTouchTapInSearchMode(listItem, activeListItemIndex);
+            }
+            if (!this.searchMode &&
+                this.props.handleTouchTap) {
+                this.props.handleTouchTap(listItem, activeListItemIndex);
+            }
         }
     }, {
         key: 'render',
@@ -105,32 +156,36 @@ var TreeList = function (_Component) {
             var _this2 = this;
 
             // required props
-            var _props = this.props,
-                children = _props.children,
-                listItems = _props.listItems,
-                contentKey = _props.contentKey;
+            var _props = this.props;
+            var children = _props.children;
+            var listItems = _props.listItems;
+            var contentKey = _props.contentKey;
             // optional props
-
             var style = this.props.style ? this.props.style : {};
             var startingDepth = this.props.startingDepth ? this.props.startingDepth : 1;
-            var expandedListItems = this.props.expandedListItems ? this.props.expandedListItems : this.state.expandedListItems;
+            var expandedListItems = this.state.expandedListItems
             var activeListItem = this.props.activeListItem ? this.props.activeListItem : this.state.activeListItem;
-            var listHeight = this.props.listHeight ? this.props.listHeight : '48px';
-            var _props2 = this.props,
-                haveSearchbar = _props2.haveSearchbar,
-                handleSearch = _props2.handleSearch;
-
+            var _props2 = this.props;
+            var haveSearchbar = _props2.haveSearchbar;
+            var handleSearch = _props2.handleSearch;
 
             var listItemsModified = listItems.map(function (listItem, i, inputArray) {
                 listItem._styles = {
                     root: {
-                        paddingLeft: (listItem.depth - startingDepth) * 16,
-                        backgroundColor: activeListItem === i ? 'rgba(0,0,0,0.2)' : null,
-                        height: listHeight,
+                        paddingLeft: (listItem.depth - startingDepth) * 23 + (!hasKids(listItem) ? 25 : 0),
+                        backgroundColor: activeListItem === i ? getActiveColor() : null,
+                        height: '24px',
                         cursor: listItem.disabled ? 'not-allowed' : 'pointer',
-                        color: listItem.disabled ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.87)',
+                        color: listItem.disabled ? 'rgba(0,0,0,0.4)' : 'white',
                         overflow: 'hidden',
-                        transform: 'translateZ(0)'
+                        userSelect: 'none',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingTop: '0px',
+                        paddingBottom: '0px',
+                        marginTop: 'auto',
+                        marginBottom: 'auto'
                     }
                 };
                 return listItem;
@@ -151,7 +206,13 @@ var TreeList = function (_Component) {
                             left,
                             _react2.default.createElement(
                                 'span',
-                                { style: { display: 'inline-block', backgroundColor: 'rgba(255,235,59,0.5)', padding: '3px' } },
+                                {
+                                    style: {
+                                        display: 'inline-block',
+                                        backgroundColor: 'rgba(255,235,59,0.5)',
+                                        padding: '3px'
+                                    }
+                                },
                                 middle
                             ),
                             right
@@ -170,18 +231,24 @@ var TreeList = function (_Component) {
                 });
             }
             // JSX: array of listItems
-            var listItemsJSX = listItemsModified.map(function (listItem, i) {
+
+            var listItemsJSX = listItemsModified.map(function (listItem, listItemIndex) {
                 if (listItem._shouldRender) {
+                    var expanderAndIcon = getLeftToggleAndIcon(listItem, _this2.props.useFolderIcons, listItemIndex)
+                    var icon = getLeftIcon(listItem, false)
                     return _react2.default.createElement(_ListItem2.default, {
-                        key: 'treeListItem-' + i,
+                        innerDivStyle: !hasKids(listItem) ? {
+                            paddingLeft: '46px',
+                        } : {paddingLeft: '64px'},
+                        key: 'treeListItem-' + listItemIndex,
                         primaryText: listItem._primaryText,
                         style: Object.assign({}, listItem._styles.root),
-                        leftIcon: getLeftIcon(listItem, _this2.props.useFolderIcons),
-                        rightIcon: !listItem.children ? null : expandedListItems.indexOf(i) === -1 ? _react2.default.createElement(_expandMore2.default, null) : _react2.default.createElement(_expandLess2.default, null),
-                        onTouchTap: function onTouchTap() {
+                        leftIcon: expanderAndIcon,
+                        onTouchTap: function onTouchTap(event) {
                             if (listItem.disabled) return;
-                            _this2.handleTouchTap(listItem, i);
-                        } });
+                            _this2.handleTouchTap(event, listItem, listItemIndex);
+                        }
+                    });
                 } else {
                     return null;
                 }
@@ -195,44 +262,112 @@ var TreeList = function (_Component) {
                     paddingTop: children ? 0 : 8
                 }
             };
+
             return _react2.default.createElement(
                 'div',
-                { style: Object.assign({}, styles.root, style) },
+                {style: Object.assign({}, styles.root, style)},
                 children,
                 haveSearchbar && _react2.default.createElement(
-                    'form',
-                    {
-                        style: { padding: '0px 16px' },
-                        onSubmit: function onSubmit(e) {
-                            e.preventDefault();
-                            if (handleSearch) {
-                                handleSearch(document.getElementById('searchfield').value);
-                            } else {
-                                _this2.setState({ searchTerm: document.getElementById('searchfield').value });
-                            }
-                            document.getElementById('searchfield').value = '';
-                        } },
-                    _react2.default.createElement(_TextField2.default, {
-                        hintText: 'Search',
-                        fullWidth: true,
-                        id: 'searchfield' })
+                'form',
+                {
+                    style: {padding: '0px 16px'},
+                    onSubmit: function onSubmit(e) {
+                        e.preventDefault();
+                        if (handleSearch) {
+                            handleSearch(document.getElementById('searchfield').value);
+                        } else {
+                            _this2.setState({searchTerm: document.getElementById('searchfield').value});
+                        }
+                        document.getElementById('searchfield').value = '';
+                    }
+                },
+                _react2.default.createElement(_TextField2.default, {
+                    hintText: 'Search',
+                    fullWidth: true,
+                    id: 'searchfield'
+                })
                 ),
                 _react2.default.createElement(
-                    _reactTransitionGroup.CSSTransitionGroup,
-                    { transitionName: 'tree-list', transitionEnterTimeout: 300, transitionLeaveTimeout: 150 },
+                    _reactAddonsCssTransitionGroup2.default,
+                    {transitionName: 'tree-list', transitionEnterTimeout: 300, transitionLeaveTimeout: 150},
                     listItemsJSX
                 )
             );
 
-            function getLeftIcon(listItem, useFolderIcons) {
-                if (useFolderIcons) {
-                    if (listItem.children) {
-                        return _react2.default.createElement(_folder2.default, null);
-                    } else {
-                        return _react2.default.createElement(_insertDriveFile2.default, null);
+            function getExpandLessProperty() {
+                return {
+                    className: getListItemPropertyName(),
+                    style: {
+                        marginLeft: getMarginLeft(),
+                        transform: getPointArrowDown()
                     }
+                }
+            }
+
+            function getExpandMoreProperty() {
+                return {
+                    className: getListItemPropertyName(),
+                    style: {
+                        marginLeft: getMarginLeft(),
+                        transform: getPointArrowRight()
+                    }
+                }
+            }
+
+            function getListItemPropertyName() {
+                return 'structure-toogle-item'
+            }
+
+            function getMarginLeft() {
+                return '-4px'
+            }
+
+            function getPointArrowRight() {
+                return 'rotate(270deg)'
+            }
+
+            function getPointArrowDown() {
+                return 'rotate(180deg)'
+            }
+
+            function getLeftToggleAndIcon(listItem, useFolderIcons, listItemIndex) {
+                var toogle = getToggle(listItem, listItemIndex)
+                var leftIcon = getLeftIcon(listItem, useFolderIcons)
+
+                if (toogle || leftIcon) {
+                    return _react2.default.createElement('div', {},
+                        toogle, leftIcon)
                 } else {
-                    return listItem.icon;
+                    return null
+                }
+            }
+
+            function hasKids(listItem) {
+                return listItem.children ? true : false
+            }
+
+            function getToggle(listItem, listItemIndex) {
+                return !listItem.children ? null :
+                    expandedListItems.indexOf(listItemIndex) === -1 ?
+                        _react2.default.createElement(_expandMore2.default, getExpandMoreProperty()) :
+                        _react2.default.createElement(_expandLess2.default, getExpandLessProperty())
+            }
+
+            function getLeftIcon(listItem, useFolderIcons) {
+                if (listItem.icon) {
+                    return _react2.default.createElement('img',
+                        {
+                            src: listItem.icon,
+                            style: {
+                                userSelect: 'none',
+                                width: '21px',
+                                height: '21px',
+                                position: 'absolute',
+                                top: '2px'
+                            }
+                        })
+                } else {
+                    return null
                 }
             }
 
@@ -270,7 +405,10 @@ var TreeList = function (_Component) {
                     }
 
                     if (match) {
-                        return Object.assign({}, listItem, { searchMatched: true, highlight: [matchIndex, matchTermLength] });
+                        return Object.assign({}, listItem, {
+                            searchMatched: true,
+                            highlight: [matchIndex, matchTermLength]
+                        });
                     } else {
                         return listItem;
                     }
@@ -299,22 +437,22 @@ var TreeList = function (_Component) {
 }(_react.Component);
 
 TreeList.contextTypes = {
-    muiTheme: _propTypes2.default.object
+    muiTheme: _react.PropTypes.object
 };
 
 TreeList.propTypes = {
-    listItems: _propTypes2.default.array.isRequired,
-    contentKey: _propTypes2.default.string.isRequired,
-    style: _propTypes2.default.object,
-    expandedListItems: _propTypes2.default.array,
-    activeListItem: _propTypes2.default.number,
-    handleTouchTap: _propTypes2.default.func,
-    handleTouchTapInSearchMode: _propTypes2.default.func,
-    handleSearch: _propTypes2.default.func,
-    listHeight: _propTypes2.default.number,
-    useFolderIcons: _propTypes2.default.bool,
-    haveSearchbar: _propTypes2.default.bool,
-    searchTerm: _propTypes2.default.string
+    listItems: _react.PropTypes.array.isRequired,
+    contentKey: _react.PropTypes.string.isRequired,
+    style: _react.PropTypes.object,
+    expandedListItems: _react.PropTypes.array,
+    activeListItem: _react.PropTypes.number,
+    handleTouchTap: _react.PropTypes.func,
+    handleTouchTapInSearchMode: _react.PropTypes.func,
+    handleSearch: _react.PropTypes.func,
+    listHeight: _react.PropTypes.number,
+    useFolderIcons: _react.PropTypes.bool,
+    haveSearchbar: _react.PropTypes.bool,
+    searchTerm: _react.PropTypes.string
 };
 
 exports.default = TreeList;
